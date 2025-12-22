@@ -1,0 +1,34 @@
+#ofertas {
+    padding-top: 3%;
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+}
+li {
+    font-family: 'Courier New', Courier, monospace;
+}
+#prodofertas {
+    margin: 3%;
+}
+h5 {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight:700;
+}
+#footer {
+    height: 450px;
+    background-image:url(../images/fondofooter.jpg);
+    background-attachment: fixed;
+}
+#tituloinf {
+    padding-left: 3%;
+    padding-top: 3%;
+    color: white;
+    text-shadow: 1px 1px 5px black;
+}
+#lista {
+    list-style: none;
+    font-size: 22px;
+    margin-left: 1%;
+    margin-top: 2%;
+    color: white;
+    text-shadow: 1px 1px 5px black;
+}

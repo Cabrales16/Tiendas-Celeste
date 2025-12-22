@@ -1,0 +1,131 @@
+#logon{
+	width:200px ;
+	height:80px;
+}
+body
+{
+    background-image: url(../php/ASSETS/IMAGENES/IMAGEN\ PROYECTO.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+	
+
+}
+table
+{
+	text-align:center;
+    width: 98%;
+    border-collapse: collapse;
+    border: 1px solid rgb(0, 0, 0);
+	margin:50px auto;
+    background: white;
+	opacity: 0.9;
+}
+th 
+{
+    background: rgb(168, 255, 158);
+    height: 40px;
+    font-weight: lighter;
+    text-shadow: 0 1px 0 #ffffff;
+    color: rgb(0, 0, 0);
+    border: 1px solid #000000;
+    box-shadow: inset 0px 1px 2px rgb(194, 255, 197);
+    transition: all 0.2s;
+	font-size: 18px;
+
+}
+tr 
+{
+    border-bottom: 1px solid #000000;
+	width:100%;
+}
+td 
+{
+    border: 1px solid #000000;
+    padding: 10px;
+    transition: all 0.2s;
+	font-size: 14px;
+}
+a,input[type="submit"],button
+{
+	font-size: 14px;
+	text-align:center;
+	width: 100px;
+	display: inline-block;
+	background-color:#78ffae;
+	padding: 6px 10px;
+	border-radius:5px;
+	text-decoration: none;
+	color:rgb(0, 0, 0);
+	border:1px solid rgb(140, 0, 255);
+	cursor:pointer;
+}
+h1
+{
+	font-family: sans-serif;
+	margin:5px;
+}
+label
+{
+	width:250px;
+	background-color:#000000;
+	padding: 20px;
+	color:rgb(0, 0, 0);
+	font-size:24px;
+	margin: 20px;
+	font-weight: lighter;
+	border-radius:5px;
+	border:2px solid #000000;
+}
+
+.caja_popup 
+{
+	display: none;
+    position: absolute;
+	padding:0;
+	background-color:rgba(0, 0, 0, 0.5);
+	width:100%;
+	height:100%;
+}
+.contenedor_popup 
+{
+	border-radius: 5px;
+	top: 50%;
+	left: 50%;
+	position: absolute;
+	transform: translate(-50%,-50%);
+	width:400px;
+	border-radius: 5px;
+	transition: all 0.2s;
+}
+img
+{
+	width:100px;
+	height:100px;
+	float:left;
+	position:absolute;
+	margin-left:2%;
+}
+.caja_popup2 
+{
+	display: block;
+    position: absolute;
+	padding:0;
+	background-color:rgba(0, 0, 0, 0.5);
+	width:100%;
+	height:100%;
+}
+#barrabuscar
+{
+	color:rgb(0, 0, 0);
+	text-align:right;
+}
+#cajabuscar
+{
+	width:500px;
+	height:30px;
+	font-size:18px;
+	background-color:#f9ffb3;
+	border-color:rgb(0, 0, 0);
+	padding-left:10px;
+	margin: 0px 30px;
+}
