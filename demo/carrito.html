@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito – Tiendas Celeste</title>
+  <link rel="icon" href="../assets/images/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/demo.css">
+</head>
+<body class="page-light">
+  <div id="nav"></div>
+
+  <div class="panel-wrap">
+    <h2 class="mb-3">🛒 Tu carrito</h2>
+    <div id="cart-box"></div>
+    <h3 class="mt-5 mb-3 d-none" id="mis-compras-title">Mis compras</h3>
+    <div id="mis-compras"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script type="module">
+    import { boot, esc, money, img, toast, fechaCorta, updateCartBadge } from "./js/ui.js";
+    import { cart, productos, ventas, auth } from "./js/db.js";
+    await boot();
+
+    const box = document.getElementById("cart-box");
+
+    function render() {
+      const lineas = cart.items().map((l) => ({ ...l, p: productos.get(l.producto) })).filter((l) => l.p);
+      if (!lineas.length) {
+        box.innerHTML = `<div class="alert alert-light border">Tu carrito está vacío. <a href="index.html">Ver ofertas</a></div>`;
+      } else {
+        const total = lineas.reduce((s, l) => s + l.p.precio * l.cantidad, 0);
+        const wa = `https://wa.me/573232459309?text=${encodeURIComponent("Hola, quiero pedir:\n" + lineas.map((l) => `• ${l.cantidad} x ${l.p.nombre}`).join("\n") + `\nTotal: ${money(total)}`)}`;
+        box.innerHTML = `
+          <div class="table-responsive"><table class="table align-middle bg-white">
+            <thead><tr><th></th><th>Producto</th><th>Precio</th><th style="width:160px">Cantidad</th><th>Subtotal</th><th></th></tr></thead>
+            <tbody>${lineas.map((l) => `
+              <tr>
+                <td><img class="cart-img" src="${img(l.p.img)}" alt=""></td>
+                <td>${esc(l.p.nombre)}</td>
+                <td>${money(l.p.precio)}</td>
+                <td><div class="input-group input-group-sm">
+                  <button class="btn btn-outline-secondary" data-act="dec" data-id="${l.p.codigo}">−</button>
+                  <input class="form-control text-center" readonly value="${l.cantidad}">
+                  <button class="btn btn-outline-secondary" data-act="inc" data-id="${l.p.codigo}">+</button></div></td>
+                <td>${money(l.p.precio * l.cantidad)}</td>
+                <td><button class="btn btn-sm btn-outline-danger" data-act="del" data-id="${l.p.codigo}" aria-label="Quitar">✕</button></td>
+              </tr>`).join("")}</tbody>
+            <tfoot><tr><th colspan="4" class="text-end">Total</th><th colspan="2">${money(total)}</th></tr></tfoot>
+          </table></div>
+          <div class="d-flex flex-wrap gap-2 justify-content-end">
+            <button class="btn btn-outline-secondary" data-act="clear">Vaciar carrito</button>
+            <a class="btn btn-success" href="${wa}" target="_blank" rel="noopener noreferrer">Pedir por WhatsApp</a>
+            <button class="btn btn-primary" data-act="checkout">Finalizar compra</button>
+          </div>`;
+      }
+      updateCartBadge();
+      renderCompras();
+    }
+
+    box.addEventListener("click", (e) => {
+      const b = e.target.closest("button[data-act]");
+      if (!b) return;
+      const id = Number(b.dataset.id);
+      const line = cart.items().find((l) => l.producto === id);
+      try {
+        if (b.dataset.act === "inc") cart.setQty(id, line.cantidad + 1);
+        if (b.dataset.act === "dec") cart.setQty(id, line.cantidad - 1);
+        if (b.dataset.act === "del") cart.setQty(id, 0);
+        if (b.dataset.act === "clear") cart.clear();
+        if (b.dataset.act === "checkout") return checkout();
+      } catch (err) {
+        toast(err.message, "error");
+      }
+      render();
+    });
+
+    function checkout() {
+      const user = auth.current();
+      if (!user) {
+        toast("Inicia sesión para finalizar tu compra.", "error");
+        setTimeout(() => (location.href = "login.html?next=carrito.html"), 900);
+        return;
+      }
+      try {
+        const v = ventas.create(user.codigo, cart.items());
+        cart.clear();
+        toast(`¡Compra #${v.codigo} registrada por ${money(v.total)}! 🎉`);
+      } catch (err) {
+        toast(err.message, "error");
+      }
+      render();
+    }
+
+    function renderCompras() {
+      const user = auth.current();
+      const title = document.getElementById("mis-compras-title");
+      const out = document.getElementById("mis-compras");
+      if (!user) {
+        title.classList.add("d-none");
+        out.innerHTML = "";
+        return;
+      }
+      const list = ventas.byUsuario(user.codigo);
+      title.classList.toggle("d-none", !list.length);
+      out.innerHTML = list.length
+        ? `<div class="table-responsive"><table class="table bg-white"><thead><tr><th>#</th><th>Fecha</th><th>Productos</th><th>Total</th></tr></thead><tbody>${list
+            .map((v) => `<tr><td>${v.codigo}</td><td>${fechaCorta(v.fecha)}</td><td>${v.items.map((i) => `${i.cantidad} × ${esc(i.nombre)}`).join(", ")}</td><td>${money(v.total)}</td></tr>`)
+            .join("")}</tbody></table></div>`
+        : "";
+    }
+
+    render();
+  </script>
+</body>
+</html>

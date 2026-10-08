@@ -1,53 +1,50 @@
 <?php
-include 'conexion_be.php';
-$USUACODIGO = $_POST['USUACODIGO'];
-$USUANOMBRE = $_POST['USUANOMBRE'];
-$USUA_CORREO = $_POST ['USUA_CORREO'];
-$USUAUSUARIO = $_POST['USUAUSUARIO'];
-$USUAPASSWORD = $_POST['USUAPASSWORD'];
+require __DIR__ . '/auth.php';
+require __DIR__ . '/conexion_be.php';
 
-$query="INSERT INTO usuario(USUACODIGO,USUANOMBRE,USUA_CORREO,USUAUSUARIO,USUAPASSWORD)
-VALUES( '$USUACODIGO','$USUANOMBRE', '$USUA_CORREO', '$USUAUSUARIO', '$USUAPASSWORD')";
-//verificar que el correo no se repita
-$verificar_correo = mysqli_query($conexion,"SELECT*FROM usuario WHERE USUA_CORREO='$USUA_CORREO'");
-if(mysqli_num_rows($verificar_correo) > 0){
-    echo'
-    <script>
-    alert("Este correo ya esta registrado, intenta con otro diferente");
-    window.location = "../index.php";
-    </script>
-    ';
-    exit();
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: ../login.php');
+    exit;
 }
-//verificar que el nombre de ususario no se repita
-$verificar_nombre = mysqli_query($conexion,"SELECT*FROM usuario WHERE  USUAUSUARIO='$USUAUSUARIO'");
-if(mysqli_num_rows($verificar_nombre) > 0){
-    echo'
-    <script>
-    alert("Este nombre ya esta registrado, intenta con otro diferente");
-    window.location = "../index.php";
-    </script>
-    ';
-    exit();
+
+$nombre = trim($_POST['USUANOMBRE'] ?? '');
+$correo = trim($_POST['USUA_CORREO'] ?? '');
+$usuario = trim($_POST['USUAUSUARIO'] ?? '');
+$password = $_POST['USUAPASSWORD'] ?? '';
+
+if ($nombre === '' || $usuario === '' || !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+    aviso_y_redirigir('Completa todos los campos con un correo válido', '../login.php');
 }
-$ejecutar = mysqli_query($conexion, $query);
+if (strlen($password) < 6) {
+    aviso_y_redirigir('La contraseña debe tener al menos 6 caracteres', '../login.php');
+}
 
-if($ejecutar){
-    echo '
-    <script>
-        alert("Usuario almasenado exitosamente");
-        window.location ="../index.php"
-    
-        </script>
-    ';
-    }
+// El correo y el nombre de usuario no pueden repetirse
+$stmt = $conexion->prepare('SELECT 1 FROM usuario WHERE USUA_CORREO = ?');
+$stmt->bind_param('s', $correo);
+$stmt->execute();
+if ($stmt->get_result()->num_rows > 0) {
+    aviso_y_redirigir('Este correo ya está registrado, intenta con otro diferente', '../login.php');
+}
 
-    else{'
-        <script>
-        alert("intentelelo denuevo usuario no almasenado");
-        window.location ="../index.php";
-        </script>
-    ';
-    }
-    mysqli_close($conexion);
-     ?>
+$stmt = $conexion->prepare('SELECT 1 FROM usuario WHERE USUAUSUARIO = ?');
+$stmt->bind_param('s', $usuario);
+$stmt->execute();
+if ($stmt->get_result()->num_rows > 0) {
+    aviso_y_redirigir('Este nombre de usuario ya está registrado, intenta con otro diferente', '../login.php');
+}
+
+// El código lo asigna la base de datos (AUTO_INCREMENT) y el rol por defecto es Cliente.
+$hash = password_hash($password, PASSWORD_DEFAULT);
+$rol = ROL_CLIENTE;
+$stmt = $conexion->prepare('INSERT INTO usuario (USUANOMBRE, USUA_CORREO, USUAUSUARIO, USUAPASSWORD, USUAROLFK) VALUES (?, ?, ?, ?, ?)');
+$stmt->bind_param('ssssi', $nombre, $correo, $usuario, $hash, $rol);
+
+try {
+    $stmt->execute();
+} catch (mysqli_sql_exception $e) {
+    error_log('Registro fallido: ' . $e->getMessage());
+    aviso_y_redirigir('Inténtalo de nuevo, el usuario no fue almacenado', '../login.php');
+}
+
+aviso_y_redirigir('Usuario almacenado exitosamente, ya puedes iniciar sesión', '../login.php');

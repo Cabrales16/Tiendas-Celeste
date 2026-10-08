@@ -1,0 +1,36 @@
+# Levanta la versión PHP + MySQL:  docker compose up --build
+# Tienda: http://localhost:8080   ·   phpMyAdmin no incluido (usa el cliente MySQL que prefieras en el puerto 3307)
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASS: root
+      DB_NAME: tiendasceleste1
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      # El dump crea la base de datos y carga los datos de ejemplo la primera vez
+      - ./tiendasceleste1.sql:/docker-entrypoint-initdb.d/01-tiendasceleste1.sql:ro
+      - dbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  dbdata:

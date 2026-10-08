@@ -1,0 +1,29 @@
+/* Estilos propios de la demo (el resto reutiliza assets/css del proyecto original). */
+#toasts { position: fixed; top: 16px; right: 16px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
+.tc-toast { padding: 10px 16px; border-radius: 8px; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.2); font-family: 'Roboto', sans-serif; }
+.tc-toast-success { background: #198754; }
+.tc-toast-error { background: #dc3545; }
+
+.demo-banner { position: fixed; left: 12px; bottom: 12px; z-index: 1900; display: flex; gap: 10px; align-items: center;
+  background: #fff3cd; border: 1px solid #ffda6a; color: #664d03; border-radius: 999px; padding: 6px 14px; font-size: 13px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15); font-family: 'Roboto', sans-serif; }
+.demo-banner button { background: none; border: 0; text-decoration: underline; font-weight: 600; color: inherit; cursor: pointer; padding: 0; }
+
+.precio { font-weight: 700; color: #b0198f; font-family: 'Courier New', Courier, monospace; }
+.card-group { gap: 16px; }
+.card-group > .card { flex: 1 1 280px; border-radius: 8px; margin: 0 !important; }
+
+body.page-light { background: #f8f9fa; }
+.panel-wrap { max-width: 1200px; margin: 24px auto; padding: 0 16px; font-family: 'Roboto', sans-serif; }
+.panel-wrap .table td, .panel-wrap .table th { vertical-align: middle; }
+
+.demo-login { max-width: 800px; margin: 0 auto 24px; padding: 12px 16px; background: rgba(255,243,205,.95); border: 1px solid #ffda6a;
+  border-radius: 10px; color: #664d03; font-size: 14px; }
+.demo-login button { width: auto; margin: 4px 6px 0 0; padding: 6px 14px; border: 1px solid #ffda6a; background: #fff; border-radius: 6px; cursor: pointer; font-weight: 500; }
+.demo-login button:hover { background: #ffe9a3; }
+
+/* La demo tiene un aviso encima del formulario: se compensa el desplazamiento del diseño original. */
+.login-page main { margin-top: 40px; }
+.login-page .contenedor__todo { margin-bottom: 220px; }
+
+.cart-img { width: 64px; height: 64px; object-fit: cover; border-radius: 6px; }

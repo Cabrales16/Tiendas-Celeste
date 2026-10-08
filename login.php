@@ -62,19 +62,18 @@
                     <!--Login-->
                     <form action="php/Login_Usuario.php" method = "POST" class="formulario__login">
                         <h2>Iniciar Sesión</h2>
-                        <input type="text" placeholder="Ingrese su correo electrónico" name="USUA_CORREO">
-                        <input type="password" placeholder="Ingrese su contraseña" name="USUAPASSWORD">
+                        <input type="email" placeholder="Ingrese su correo electrónico" name="USUA_CORREO" required>
+                        <input type="password" placeholder="Ingrese su contraseña" name="USUAPASSWORD" required>
                         <button>Entrar</button>
                     </form>
 
                     <!--Register-->
                     <form action="php/registro_usuario_be.php" method = "POST" class="formulario__register">
                         <h2>Regístrarse</h2>
-                        <input type="number" placeholder="Ingrese su código" name="USUACODIGO">
-                        <input type="text" placeholder="Ingrese su nombre de usuario" name="USUANOMBRE">
-                        <input type="text" placeholder="Ingrese su correo electrónico" name="USUA_CORREO">
-                        <input type="text" placeholder="Ingrese su apodo" name="USUAUSUARIO">
-                        <input type="password" placeholder="Ingrese su contraseña" name="USUAPASSWORD">
+                        <input type="text" placeholder="Ingrese su nombre" name="USUANOMBRE" required>
+                        <input type="email" placeholder="Ingrese su correo electrónico" name="USUA_CORREO" required>
+                        <input type="text" placeholder="Ingrese su apodo (usuario)" name="USUAUSUARIO" required>
+                        <input type="password" placeholder="Contraseña (mínimo 6 caracteres)" name="USUAPASSWORD" minlength="6" required>
                         <button>Regístrarse</button>
                     </form>
                 </div>

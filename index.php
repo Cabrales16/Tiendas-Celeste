@@ -1,19 +1,7 @@
 <?php
- session_start();
- if(!isset($_SESSION['usuario'])){
-  echo '
-  <script>
-  alert("Por favor debes iniciar sesion");
-  window.location = "login.php";
-  </script>
-  ';
-  //header("location: index.php");
-  session_destroy(); 
-  die();
-  
- }
-
- //session_destroy(); 
+require_once __DIR__ . '/php/auth.php';
+requerir_login('login.php');
+$esEmpleado = (usuario_actual()['rol'] ?? 0) === ROL_EMPLEADO;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,8 +22,11 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+<?php if ($esEmpleado): ?>
               <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="CRUD/index.php">Panel de usuarios</a>
               </li>
+<?php endif; ?>
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="#tituloinf">Quienes somos</a>
               </li>

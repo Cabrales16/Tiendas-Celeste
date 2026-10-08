@@ -11,6 +11,9 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
+CREATE DATABASE IF NOT EXISTS `tiendasceleste1` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `tiendasceleste1`;
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -48,10 +51,10 @@ SET ROLNOMBRE = ROLNOM, ROLOBSERVACION = ROLOBS, ROLACTIVO = ROLACT
 WHERE ROLCODIGO = ROLCOD;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizar_usuario` (IN `usuaco` INT(11), IN `usuaident` VARCHAR(20), IN `usuatiid` VARCHAR(15), `usuanom` VARCHAR(50), IN `usuaape` VARCHAR(50), IN `usuacel` VARCHAR(15), IN `usuadire` VARCHAR(50), IN `usuausu` VARCHAR(15), `usuapas` VARCHAR(15), `usuaro` INT(11))   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizar_usuario` (IN `usuaco` INT(11), IN `usuaident` VARCHAR(20), IN `usuatiid` VARCHAR(15), `usuanom` VARCHAR(50), IN `usuaape` VARCHAR(50), IN `usuacel` VARCHAR(15), IN `usuadire` VARCHAR(50), IN `usuausu` VARCHAR(15), `usuapas` VARCHAR(255), `usuaro` INT(11))   BEGIN
 UPDATE usuario
 SET USUAIDENTIFICACION=usuaident, USUATIPOID=usuatiid, USUANOMBRE=usuanom, USUAAPELLIDO=usuaape, USUACELULAR=usuacel, USUADIRECCION=usuadire, USUAUSUARIO=usuausu, USUAPASSWORD=usuapas, USUAROLFK=usuaro
-WHERE USUACODIGO=ususaco;
+WHERE USUACODIGO=usuaco;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizar_venta` (IN `ventco` INT(11), IN `ventfe` DATE, IN `ventto` FLOAT, `usuaco` INT(11))   BEGIN
@@ -94,7 +97,7 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insertar_rol` (IN `ROLCODIGO` INT(11), IN `ROLNOMBRE` VARCHAR(32), IN `ROLOBSERVACION` VARCHAR(200), `ROLACTIVO` TINYINT(4))   BEGIN insert into rol (ROLCODIGO, ROLNOMBRE, ROLOBSERVACION, ROLACTIVO) VALUES(ROLCODIGO, ROLNOMBRE, ROLOBSERVACION, ROLACTIVO); 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `insertar_usuario` (IN `USUACODIGO` INT(11), IN `USUAIDENTIFICACION` VARCHAR(20), IN `USUATIPOID` VARCHAR(15), `USUANOMBRE` VARCHAR(50), IN `USUAAPELLIDO` VARCHAR(50), IN `USUACELULAR` VARCHAR(15), IN `USUADIRECCION` VARCHAR(50), IN `USUAUSUARIO` VARCHAR(15), IN `USUAPASSWORD` VARCHAR(15), IN `USUAROLFK` INT(11))   BEGIN insert into usuario (USUACODIGO, USUAIDENTIFICACION, USUATIPOID, USUANOMBRE, USUAAPELLIDO, USUACELULAR, USUADIRECCION, USUAUSUARIO, USUAPASSWORD, USUAROLFK) VALUES(USUACODIGO, USUAIDENTIFICACION, USUATIPOID, USUANOMBRE, USUAAPELLIDO, USUACELULAR, USUADIRECCION, USUAUSUARIO, USUAPASSWORD, USUAROLFK); 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertar_usuario` (IN `USUACODIGO` INT(11), IN `USUAIDENTIFICACION` VARCHAR(20), IN `USUATIPOID` VARCHAR(15), `USUANOMBRE` VARCHAR(50), IN `USUAAPELLIDO` VARCHAR(50), IN `USUACELULAR` VARCHAR(15), IN `USUADIRECCION` VARCHAR(50), IN `USUAUSUARIO` VARCHAR(15), IN `USUAPASSWORD` VARCHAR(255), IN `USUAROLFK` INT(11))   BEGIN insert into usuario (USUACODIGO, USUAIDENTIFICACION, USUATIPOID, USUANOMBRE, USUAAPELLIDO, USUACELULAR, USUADIRECCION, USUAUSUARIO, USUAPASSWORD, USUAROLFK) VALUES(USUACODIGO, USUAIDENTIFICACION, USUATIPOID, USUANOMBRE, USUAAPELLIDO, USUACELULAR, USUADIRECCION, USUAUSUARIO, USUAPASSWORD, USUAROLFK); 
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insertar_venta` (IN `VENTCODIGO` INT(11), IN `VENTFECHA` DATE, IN `VENTTOTAL` FLOAT, IN `USUACODIGOFK` INT(11))   BEGIN insert into venta (VENTCODIGO, VENTFECHA, VENTTOTAL, USUACODIGOFK) VALUES(VENTCODIGO, VENTFECHA, VENTTOTAL, USUACODIGOFK); 
@@ -148,7 +151,7 @@ CREATE TABLE `detalleventa_usuario` (
 ,`USUACELULAR` varchar(15)
 ,`USUADIRECCION` varchar(50)
 ,`USUAUSUARIO` varchar(15)
-,`USUAPASSWORD` varchar(15)
+,`USUAPASSWORD` varchar(255)
 ,`USUAROLFK` int(11)
 );
 
@@ -302,8 +305,8 @@ CREATE TABLE `usuario` (
   `USUACELULAR` varchar(15) DEFAULT NULL,
   `USUADIRECCION` varchar(50) DEFAULT NULL,
   `USUAUSUARIO` varchar(15) NOT NULL,
-  `USUAPASSWORD` varchar(15) NOT NULL,
-  `USUA_CORREO` varchar(30) NOT NULL,
+  `USUAPASSWORD` varchar(255) NOT NULL,
+  `USUA_CORREO` varchar(100) NOT NULL,
   `USUAROLFK` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -312,21 +315,21 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`USUACODIGO`, `USUAIDENTIFICACION`, `USUATIPOID`, `USUANOMBRE`, `USUAAPELLIDO`, `USUACELULAR`, `USUADIRECCION`, `USUAUSUARIO`, `USUAPASSWORD`, `USUA_CORREO`, `USUAROLFK`) VALUES
-(1000, '91827392', 'cc', 'andres', 'cabrales', '328362432', 'cll127', 'andrescab', '198273943', '', 1),
-(1001, '19283897', 'cc', 'jhosep', 'solano', '312398723', 'av91', 'jhosepsol', '128392453', '', 1),
-(1002, '128934323', 'cc', 'douglas', 'ramirez', '321398794', 'calle128bis', 'douglasram', '123984932', '', 2),
-(1003, '987124132', 'ti', 'valentina', 'borrero', '32174893', 'calle128', 'valeborr', '18923js', '', 2),
-(1004, '598347123', 'ti', 'gerson', 'sanchez', '31198735', 'avcali', 'gersonsan', 'ger893222', '', 2),
-(1005, '45676243', 'cc', 'oliver', 'pastrana', '322987435', 'kr78', 'santiagopas', '9843dsad12', '', 2),
-(1006, '2342345', 'cc', 'María', 'lópez', '333222111', 'Calle 123', 'marialopez', 'contrase123', '', 1),
-(1007, '345646323', 'cc', 'Juan', 'Martínez', '4564564', 'Avenida Principal', 'juanmartinez', 'password123', '', 2),
-(1008, '346456243', 'ti', 'Ana', 'garcía', '999888777', 'Calle Central', 'anagarcia', 'clave456', '', 1),
-(1009, '123456789', 'cc', 'Sofía', 'Pérez', '987345675', 'Calle Sur', 'sofiaperez', 'contraseasd', '', 1),
-(1010, '1234567835', 'ti', 'Laura', 'hernandez', '983458934523', 'Calle Sur', 'lauraher', '12938784', '', 1),
-(1011, '456789123', 'cc', 'Diego', 'Gómez', '321654987', 'Avenida Norte', 'diegogomez', 'clave789', '', 2),
-(1012, NULL, NULL, 'bro', NULL, NULL, NULL, 'gerson', '124123', 'andrescabrales322@gmail.com', NULL),
-(1013, NULL, NULL, 'caba', NULL, NULL, NULL, 'Jhosep', '123123', 'folletoman12@gmail.com', NULL),
-(1014, NULL, NULL, 'douglas', NULL, NULL, NULL, 'Douglas Eduardo', '1412343', 'dougleis@gmail.com', NULL);
+(1000, '1000000000', 'cc', 'andres', 'cabrales', '3000000000', 'Dirección de ejemplo 1', 'andrescab', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'andrescab@tiendasceleste.demo', 1),
+(1001, '1000000001', 'ti', 'jhosep', 'solano', '3000000001', 'Dirección de ejemplo 2', 'jhosepsol', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'jhosepsol@tiendasceleste.demo', 1),
+(1002, '1000000002', 'cc', 'douglas', 'ramirez', '3000000002', 'Dirección de ejemplo 3', 'douglasram', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'douglasram@tiendasceleste.demo', 2),
+(1003, '1000000003', 'ti', 'valentina', 'borrero', '3000000003', 'Dirección de ejemplo 4', 'valeborr', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'valeborr@tiendasceleste.demo', 2),
+(1004, '1000000004', 'cc', 'gerson', 'sanchez', '3000000004', 'Dirección de ejemplo 5', 'gersonsan', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'gersonsan@tiendasceleste.demo', 2),
+(1005, '1000000005', 'ti', 'oliver', 'pastrana', '3000000005', 'Dirección de ejemplo 6', 'santiagopas', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'santiagopas@tiendasceleste.demo', 2),
+(1006, '1000000006', 'cc', 'María', 'lópez', '3000000006', 'Dirección de ejemplo 7', 'marialopez', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'marialopez@tiendasceleste.demo', 1),
+(1007, '1000000007', 'ti', 'Juan', 'Martínez', '3000000007', 'Dirección de ejemplo 8', 'juanmartinez', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'juanmartinez@tiendasceleste.demo', 2),
+(1008, '1000000008', 'cc', 'Ana', 'garcía', '3000000008', 'Dirección de ejemplo 9', 'anagarcia', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'anagarcia@tiendasceleste.demo', 1),
+(1009, '1000000009', 'ti', 'Sofía', 'Pérez', '3000000009', 'Dirección de ejemplo 10', 'sofiaperez', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'sofiaperez@tiendasceleste.demo', 1),
+(1010, '1000000010', 'cc', 'Laura', 'hernandez', '3000000010', 'Dirección de ejemplo 11', 'lauraher', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'lauraher@tiendasceleste.demo', 1),
+(1011, '1000000011', 'ti', 'Diego', 'Gómez', '3000000011', 'Dirección de ejemplo 12', 'diegogomez', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'diegogomez@tiendasceleste.demo', 2),
+(1012, '1000000012', 'cc', 'bro', NULL, '3000000012', 'Dirección de ejemplo 13', 'gerson', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'gerson@tiendasceleste.demo', 2),
+(1013, '1000000013', 'ti', 'caba', NULL, '3000000013', 'Dirección de ejemplo 14', 'Jhosep', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'jhosep@tiendasceleste.demo', 2),
+(1014, '1000000014', 'cc', 'douglas', NULL, '3000000014', 'Dirección de ejemplo 15', 'Douglas Eduardo', '$2y$10$jKyXoChwALRPcrtNOi3FyOiHg507IDbHQCiTRlk9C.Mk8.XU4f5Ra', 'douglaseduardo@tiendasceleste.demo', 2);
 
 -- --------------------------------------------------------
 
@@ -343,7 +346,7 @@ CREATE TABLE `usuario_rol` (
 ,`USUACELULAR` varchar(15)
 ,`USUADIRECCION` varchar(50)
 ,`USUAUSUARIO` varchar(15)
-,`USUAPASSWORD` varchar(15)
+,`USUAPASSWORD` varchar(255)
 ,`USUAROLFK` int(11)
 ,`ROLCODIGO` int(11)
 ,`ROLNOMBRE` varchar(32)
@@ -400,7 +403,7 @@ CREATE TABLE `venta_usuario` (
 ,`USUACELULAR` varchar(15)
 ,`USUADIRECCION` varchar(50)
 ,`USUAUSUARIO` varchar(15)
-,`USUAPASSWORD` varchar(15)
+,`USUAPASSWORD` varchar(255)
 ,`USUAROLFK` int(11)
 );
 
@@ -498,6 +501,8 @@ ALTER TABLE `usuario`
   ADD PRIMARY KEY (`USUACODIGO`),
   ADD UNIQUE KEY `USUAIDENTIFICACION` (`USUAIDENTIFICACION`),
   ADD UNIQUE KEY `USUACELULAR` (`USUACELULAR`),
+  ADD UNIQUE KEY `USUA_CORREO` (`USUA_CORREO`),
+  ADD UNIQUE KEY `USUAUSUARIO` (`USUAUSUARIO`),
   ADD KEY `USUAROLFK` (`USUAROLFK`);
 
 --

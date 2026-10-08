@@ -1,4 +1,6 @@
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
+# Publica la demo estática (carpeta demo/ + assets/) en GitHub Pages con el pipeline de Jekyll.
+# La versión PHP no se puede alojar en Pages (no ejecuta PHP), por eso la demo reemplaza
+# el backend por JavaScript + localStorage. Jekyll solo entrega los archivos estáticos.
 name: Deploy Jekyll with GitHub Pages dependencies preinstalled
 
 on:
@@ -28,12 +30,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Prepare static site
+        run: |
+          mkdir -p site
+          cp -r demo site/demo
+          cp -r assets site/assets
+          printf '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=demo/"><link rel="canonical" href="demo/"><title>Tiendas Celeste</title><a href="demo/">Ir a la demo</a>' > site/index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
-          source: ./
+          source: ./site
           destination: ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
