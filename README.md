@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/banner.png" alt="Tiendas Celeste: tienda en línea de regalos con carrito y pedidos por WhatsApp" width="100%">
+
 # 🎁 Tiendas Celeste
 
 **Obsequios como caídos del cielo** — tienda en línea de desayunos sorpresa, peluches, dulces, accesorios, juguetes, maquillaje y regalos.
